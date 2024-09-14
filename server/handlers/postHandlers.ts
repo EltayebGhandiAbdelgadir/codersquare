@@ -3,15 +3,15 @@ import crypto from "crypto";
 import { ExpressHandler, Post } from "../types";
 import { CreatePostRequest, CreatePostResponse, ListPostsRequest, ListPostsResponse } from "../api";
 
-export const listPostHandler: ExpressHandler<ListPostsRequest,ListPostsResponse> = (req,res)=>{
-    res.send({posts:db.listPosts()});
+export const listPostHandler: ExpressHandler<ListPostsRequest,ListPostsResponse> = async (req,res)=>{
+    res.send({posts:await db.listPosts()});
 }
 
 
 export const createPostHandler: ExpressHandler<
     CreatePostRequest,
     CreatePostResponse
-    > =(req,res)=>{
+    > = async (req,res)=>{
    
     if(!req.body.title || !req.body.url || !req.body.userId){
         return res.sendStatus(400);
@@ -25,6 +25,6 @@ export const createPostHandler: ExpressHandler<
         userId:req.body.userId,
     };
 
-    db.createPost(post);
+    await db.createPost(post);
     res.sendStatus(200);
 }
