@@ -2,7 +2,9 @@ import express, {ErrorRequestHandler, RequestHandler}from 'express';
 import { createPostHandler, listPostHandler } from './handlers/postHandlers';
 import asyncHandler from "express-async-handler"
 import { initDb } from './datastore';
-import {signInHandler, signUpHandler } from './handlers/userHandlers';
+import {signInHandler, signUpHandler } from './handlers/authHandlers';
+import { RequestLogger } from './middleware/loggerMiddleware';
+import { errHandler } from './middleware/errorMiddleware';
 
 (async()=>{
     await initDb();
@@ -10,10 +12,7 @@ import {signInHandler, signUpHandler } from './handlers/userHandlers';
 const app = express();
 app.use(express.json());
 
-const RequestLogger : RequestHandler = (req,res,next)=>{
-    console.log(req.method,req.path," - body:",req.body);
-    next();
-};
+
 
 app.use(RequestLogger);
 
@@ -27,10 +26,7 @@ app.post("/v1/signIn",asyncHandler(signInHandler))
 
 
 
-const errHandler: ErrorRequestHandler = (err,req,res,next)=>{
-    console.error("Uncaught exception:",err);
-    return res.status(500).send("Oops, an unexpected error occurred, please try again");
-}
+
 
 app.use(errHandler);
 app.listen(3000);
