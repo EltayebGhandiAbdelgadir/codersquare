@@ -4,6 +4,7 @@ import { ExpressHandler, Post } from "../types";
 import { CreatePostRequest, CreatePostResponse, ListPostsRequest, ListPostsResponse } from "../api";
 
 export const listPostHandler: ExpressHandler<ListPostsRequest,ListPostsResponse> = async (req,res)=>{
+    console.log(req.headers.authorization)
     res.send({posts:await db.listPosts()});
 }
 
